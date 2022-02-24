@@ -1,29 +1,29 @@
 import React, { useEffect, useState } from "react";
-import axios from 'axios';
+import {Table} from 'react-bootstrap';
+import axios from "axios";
 
 const useProjectApi = () => {
-    const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState([]);
 
-    const fetchProjects = async () => {
-      try {
-        let userProjects = await axios.get('localhost:3001/user/1/projects');
-        setProjects(userProjects);
-      } catch (error) {
-        console.log("Error while fetching projects:", error.message);
-      }  
+  const fetchProjects = async () => {
+    try {
+      let userProjects = await axios.get("http://localhost:3001/user/1/projects");
+      setProjects(userProjects);
+    } catch (error) {
+      console.log("Error while fetching projects:", error.message);
     }
+  };
 
-    useEffect(() => {
-      fetchProjects();
-    }, [])
-    return {projects};
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+  return { projects };
 };
 
 const ProjectList = () => {
-
   return (
     <>
-      <table class="table">
+      <Table class="striped hover">
         <thead>
           <tr>
             <th>
@@ -55,7 +55,7 @@ const ProjectList = () => {
             </td>
           </tr>
         </tbody>
-      </table>
+      </Table>
     </>
   );
 };
