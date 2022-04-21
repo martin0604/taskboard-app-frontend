@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {Table} from 'react-bootstrap';
+import {Table, Button} from 'react-bootstrap';
 import axios from "axios";
 
 const useProjectApi = () => {
@@ -7,8 +7,8 @@ const useProjectApi = () => {
 
   const fetchProjects = async () => {
     try {
-      let userProjects = await axios.get("http://localhost:3001/user/1/projects");
-      setProjects(userProjects);
+      let response = await axios.get("http://localhost:3001/api/user/1/projects/n-tasks");
+      setProjects(response.data.userProjects);
     } catch (error) {
       console.log("Error while fetching projects:", error.message);
     }
@@ -17,10 +17,11 @@ const useProjectApi = () => {
   useEffect(() => {
     fetchProjects();
   }, []);
-  return { projects };
+  return projects;
 };
 
 const ProjectList = () => {
+  const projects = useProjectApi();
   return (
     <>
       <Table class="striped hover">
@@ -41,19 +42,21 @@ const ProjectList = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Asvitec</td>
-            <td>
-              Development of a virtual assistant that helps technicians to send
-              reports related to their daily work
-            </td>
-            <td>23</td>
-            <td>
-              <span class="icon">
-                <i class="fas fa-home"></i>
-              </span>
-            </td>
-          </tr>
+          {projects.map(project => 
+              <tr>
+                <td>{project.name}</td>
+                <td>{project.description}</td>
+                <td>{project.number_of_tasks}</td>
+                <td>
+                  <div style={{display: 'flex', flexDirection: 'row', gap: 5}}>
+                    <Button variant="success" size="sm">Tasks</Button>
+                    <Button variant="secondary" size="sm">Edit</Button>
+                    <Button variant="danger" size="sm">Delete</Button>
+                  </div>
+                </td>
+              </tr>
+          )}
+          
         </tbody>
       </Table>
     </>
